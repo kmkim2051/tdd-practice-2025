@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Method;
 
@@ -18,9 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class PracticeApplicationTests {
 
   @Test
-  void 컨트롤러에_CheckOnly_라는_애너테이션_달려있음() throws Exception {
+  void 컨트롤러에_TimeoutCheck_라는_애너테이션_달려있음() throws Exception {
     Method method = LoggingController.class.getMethod("hello");
-    assertThat(method.isAnnotationPresent(CheckOnly.class)).isTrue();
+    assertThat(method.isAnnotationPresent(TimeoutCheck.class)).isTrue();
   }
 
 }

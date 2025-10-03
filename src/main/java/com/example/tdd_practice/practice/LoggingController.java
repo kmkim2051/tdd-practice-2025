@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LoggingController {
 
-
+  @TimeoutCheck
   @GetMapping
   public ResponseEntity<String> hello() {
     return ResponseEntity.ok("Hello");
