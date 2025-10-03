@@ -3,6 +3,7 @@ package com.example.tdd_practice.practice;
 import com.example.tdd_practice.practice.annotation.TimeoutCheck;
 import com.example.tdd_practice.practice.controller.LoggingController;
 import com.example.tdd_practice.practice.util.TimeoutContext;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,6 +18,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 @AutoConfigureMockMvc
 class PracticeApplicationTests {
+  @BeforeEach
+  void setup() {
+    TimeoutContext.clear();
+  }
 
   @Autowired
   private LoggingController loggingController;
@@ -54,7 +59,30 @@ class PracticeApplicationTests {
    */
   @Test
   void SECOND_선택시_초단위_적용() throws NoSuchMethodException, InterruptedException {
-    Method method = LoggingController.class.getMethod("slowMethod", Long.class);
+    // 기준치 세팅
+    TimeoutContext.set(3, TimeoutCheck.TimeUnit.SECONDS);
+
+    Method method = LoggingController.class.getMethod("slowMethod", long.class);
+    TimeoutCheck annotation = method.getAnnotation(TimeoutCheck.class);
+
+    // 예상 소요시간
+    long expectedMs = annotation.unit() == TimeoutCheck.TimeUnit.SECONDS
+        ? annotation.threshold() * 1000 : annotation.threshold();
+
+    // 실제 소요시간
+    long start = System.currentTimeMillis();
+    loggingController.slowMethod(2000); // 2초
+    long duration = System.currentTimeMillis() - start;
+
+    assertThat(duration - 30 < expectedMs); // 30은 시스템적인 실행시간
+  }
+
+  /*
+   신규 요구사항 - second, millisecond 선택
+   */
+  @Test
+  void MS_선택시_밀리초단위_적용() throws NoSuchMethodException, InterruptedException {
+    Method method = LoggingController.class.getMethod("slowMethod", long.class);
     TimeoutCheck annotation = method.getAnnotation(TimeoutCheck.class);
 
     // 예상 소요시간

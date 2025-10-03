@@ -21,11 +21,12 @@ public class TimeoutAspect {
     Long testThreshold = TimeoutContext.get();
     Long threshold = (testThreshold == null) ? timeoutCheck.threshold() : testThreshold;
 
-    log.info("threshold: {}, duration: {}", threshold,duration);
-
     long margin = 30L; // 실행에 따른 조정치
+    long marginedDuration = duration - margin;
 
-    if (duration + margin >= threshold) {
+    log.info("threshold: {}, marginedDuration: {}", threshold,marginedDuration);
+
+    if (marginedDuration - margin >= threshold) {
       throw new RuntimeException();
     }
 
