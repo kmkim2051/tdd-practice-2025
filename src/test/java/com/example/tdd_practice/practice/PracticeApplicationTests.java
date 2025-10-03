@@ -28,12 +28,19 @@ class PracticeApplicationTests {
   }
 
   @Test
-  void N초이상_걸리면_실패() {
+  void N초이상_걸리면_실패() throws InterruptedException {
     long threshold = 3L; // 3초 이상 걸리면 실패 판정
     TimeoutContext.set(threshold);
-
     assertThrows(RuntimeException.class, () -> loggingController.slowMethod(5000));
   }
+
+  @Test
+  void N초미만_성공() throws InterruptedException {
+    long threshold = 3L; // 3초 이상 걸리면 실패 판정
+    TimeoutContext.set(threshold);
+    assertThat(loggingController.slowMethod(2500)).isNotNull();
+  }
+
 
   @Test
   void Aspect_타임아웃_ThreadLocal_세팅() {
