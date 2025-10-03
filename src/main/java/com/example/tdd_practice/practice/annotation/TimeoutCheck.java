@@ -1,4 +1,4 @@
-package com.example.tdd_practice.practice;
+package com.example.tdd_practice.practice.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
