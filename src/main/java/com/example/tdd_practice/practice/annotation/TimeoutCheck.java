@@ -9,4 +9,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TimeoutCheck {
   long threshold();
+  TimeUnit unit() default TimeUnit.MILLISECONDS;
+
+  enum TimeUnit {
+    MILLISECONDS,
+    SECONDS
+  }
 }

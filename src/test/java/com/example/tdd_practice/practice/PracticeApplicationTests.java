@@ -59,12 +59,12 @@ class PracticeApplicationTests {
 
     // 예상 소요시간
     long expectedMs = annotation.unit() == TimeoutCheck.TimeUnit.SECONDS
-        ? annotation.value() * 1000 : annotation.value();
+        ? annotation.threshold() * 1000 : annotation.threshold();
 
     // 실제 소요시간
     long start = System.currentTimeMillis();
     loggingController.slowMethod(2000); // 2초
-    long duration = System.currentTimeMillis();
+    long duration = System.currentTimeMillis() - start;
 
     assertThat(duration - 30 < expectedMs); // 30은 시스템적인 실행시간
   }
