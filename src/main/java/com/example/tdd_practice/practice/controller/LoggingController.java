@@ -14,7 +14,7 @@ public class LoggingController {
     return ResponseEntity.ok("Hello");
   }
 
-  @TimeoutCheck(threshold = 2000) // default threshold
+  @TimeoutCheck(threshold = 2000, unit = TimeoutCheck.TimeUnit.MILLISECONDS) // default threshold
   public ResponseEntity<String> slowMethod(long sleepMillis) throws InterruptedException {
     Thread.sleep(sleepMillis);
     return ResponseEntity.ok("success");

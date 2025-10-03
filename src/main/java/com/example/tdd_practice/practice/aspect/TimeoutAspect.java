@@ -18,15 +18,23 @@ public class TimeoutAspect {
     Object result = joinPoint.proceed();
     long duration = System.currentTimeMillis() - start;
 
-    Long testThreshold = TimeoutContext.get();
+    Long testThreshold = TimeoutContext.getThreshold();
     Long threshold = (testThreshold == null) ? timeoutCheck.threshold() : testThreshold;
+
+    TimeoutCheck.TimeUnit testTimeUnit = TimeoutContext.getTimeUnit();
+    TimeoutCheck.TimeUnit unit = testTimeUnit == null ?
+        timeoutCheck.unit() :
+        testTimeUnit;
+
+    log.info("unit : {}", unit);
+    threshold = unit == TimeoutCheck.TimeUnit.SECONDS ? threshold * 1000 : threshold;
 
     long margin = 30L; // 실행에 따른 조정치
     long marginedDuration = duration - margin;
 
-    log.info("threshold: {}, marginedDuration: {}", threshold,marginedDuration);
+    log.info("threshold: {}, marginedDuration: {}", threshold, marginedDuration);
 
-    if (marginedDuration - margin >= threshold) {
+    if (marginedDuration >= threshold) {
       throw new RuntimeException();
     }
 

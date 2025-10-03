@@ -35,7 +35,7 @@ class PracticeApplicationTests {
   @Test
   void N초이상_걸리면_실패() throws InterruptedException {
     long threshold = 3L; // 3초 이상 걸리면 실패 판정
-    TimeoutContext.set(threshold);
+    TimeoutContext.set(threshold, TimeoutCheck.TimeUnit.SECONDS);
     assertThrows(RuntimeException.class, () -> loggingController.slowMethod(5000));
   }
 
@@ -50,7 +50,7 @@ class PracticeApplicationTests {
   @Test
   void Aspect_타임아웃_ThreadLocal_세팅() {
     TimeoutContext.set(7000);
-    long threshold = TimeoutContext.get();
+    long threshold = TimeoutContext.getThreshold();
     assertThat(threshold).isEqualTo(7000L);
   }
 
