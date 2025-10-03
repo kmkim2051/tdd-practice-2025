@@ -2,6 +2,7 @@ package com.example.tdd_practice.practice;
 
 import com.example.tdd_practice.practice.annotation.TimeoutCheck;
 import com.example.tdd_practice.practice.controller.LoggingController;
+import com.example.tdd_practice.practice.util.TimeoutContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,8 +35,8 @@ class PracticeApplicationTests {
 
   @Test
   void Aspect_타임아웃_ThreadLocal_세팅() {
-    TimeoutContext.setThreshold(5);
-    long threshold = TimeoutContext.getThreshold();
+    TimeoutContext.set(5);
+    long threshold = TimeoutContext.get();
     assertThat(threshold).isEqualTo(5L);
   }
 }
