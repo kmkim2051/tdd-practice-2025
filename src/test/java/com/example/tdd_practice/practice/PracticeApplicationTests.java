@@ -29,14 +29,16 @@ class PracticeApplicationTests {
 
   @Test
   void N초이상_걸리면_실패() {
+    long threshold = 3L; // 3초 이상 걸리면 실패 판정
+    TimeoutContext.set(threshold);
+
     assertThrows(RuntimeException.class, () -> loggingController.slowMethod(5000));
-    // req: N초 설정
   }
 
   @Test
   void Aspect_타임아웃_ThreadLocal_세팅() {
-    TimeoutContext.set(5);
+    TimeoutContext.set(7);
     long threshold = TimeoutContext.get();
-    assertThat(threshold).isEqualTo(5L);
+    assertThat(threshold).isEqualTo(7L);
   }
 }

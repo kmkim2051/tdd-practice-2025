@@ -8,9 +8,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LoggingController {
 
-  @TimeoutCheck
+  @TimeoutCheck(threshold = 2)
   @GetMapping
   public ResponseEntity<String> hello() {
     return ResponseEntity.ok("Hello");
+  }
+
+  @TimeoutCheck(threshold = 2) // default threshold
+  public ResponseEntity<String> slowMethod(long sleepMillis) throws InterruptedException {
+    Thread.sleep(sleepMillis);
+    return ResponseEntity.ok("success");
   }
 }
