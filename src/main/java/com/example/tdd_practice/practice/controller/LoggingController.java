@@ -19,4 +19,10 @@ public class LoggingController {
     Thread.sleep(sleepMillis);
     return ResponseEntity.ok("success");
   }
+
+  @TimeoutCheck(threshold = 2000) // default threshold
+  public ResponseEntity<String> fastMethod() throws InterruptedException {
+    Thread.sleep(1000);
+    return ResponseEntity.ok("success");
+  }
 }

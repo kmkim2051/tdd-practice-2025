@@ -23,7 +23,9 @@ public class TimeoutAspect {
 
     log.info("threshold: {}, duration: {}", threshold,duration);
 
-    if (duration >= threshold * 1000) {
+    long margin = 30L; // 실행에 따른 조정치
+
+    if (duration + margin >= threshold) {
       throw new RuntimeException();
     }
 
