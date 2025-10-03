@@ -26,6 +26,5 @@ public class TimeoutContext {
   public static void clear() {
     thresholdHolder.remove();
     timeUnitHolder.remove();
-
   }
 }

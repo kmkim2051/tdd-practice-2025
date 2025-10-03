@@ -12,26 +12,24 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class TimeoutAspect {
+  private final long MARGIN = 30L;
+
   @Around("@annotation(timeoutCheck)")
   public Object checkTimeout(ProceedingJoinPoint joinPoint, TimeoutCheck timeoutCheck) throws Throwable {
     long start = System.currentTimeMillis();
     Object result = joinPoint.proceed();
     long duration = System.currentTimeMillis() - start;
 
-    Long testThreshold = TimeoutContext.getThreshold();
-    Long threshold = (testThreshold == null) ? timeoutCheck.threshold() : testThreshold;
-
-    TimeoutCheck.TimeUnit testTimeUnit = TimeoutContext.getTimeUnit();
-    TimeoutCheck.TimeUnit unit = testTimeUnit == null ?
-        timeoutCheck.unit() :
-        testTimeUnit;
-
+    // --------------- TIME UNIT ---------------
+    TimeoutCheck.TimeUnit unit = getUnit(timeoutCheck);
     log.info("unit : {}", unit);
-    threshold = unit == TimeoutCheck.TimeUnit.SECONDS ? threshold * 1000 : threshold;
 
-    long margin = 30L; // 실행에 따른 조정치
-    long marginedDuration = duration - margin;
+    // --------------- THRESHOLD ---------------
+    Long threshold = getThreshold(timeoutCheck);
+    threshold = convertToMs(threshold, unit);
 
+    // --------------- CALCULATION ---------------
+    long marginedDuration = getMarginedDuration(duration);
     log.info("threshold: {}, marginedDuration: {}", threshold, marginedDuration);
 
     if (marginedDuration >= threshold) {
@@ -39,5 +37,25 @@ public class TimeoutAspect {
     }
 
     return result;
+  }
+
+  private long getThreshold(TimeoutCheck timeoutCheck) {
+    Long testThreshold = TimeoutContext.getThreshold();
+    return (testThreshold == null) ? timeoutCheck.threshold() : testThreshold;
+  }
+
+  private TimeoutCheck.TimeUnit getUnit(TimeoutCheck timeoutCheck) {
+    TimeoutCheck.TimeUnit testTimeUnit = TimeoutContext.getTimeUnit();
+    return testTimeUnit == null ?
+        timeoutCheck.unit() :
+        testTimeUnit;
+  }
+
+  private long getMarginedDuration(long duration) {
+    return duration - MARGIN;
+  }
+
+  private long convertToMs(Long threshold, TimeoutCheck.TimeUnit unit) {
+    return (unit == TimeoutCheck.TimeUnit.SECONDS) ? threshold * 1000 : threshold;
   }
 }

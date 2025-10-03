@@ -20,7 +20,8 @@ public class LoggingController {
     return ResponseEntity.ok("success");
   }
 
-  @TimeoutCheck(threshold = 2000) // default threshold
+  @TimeoutCheck(threshold = 2, unit = TimeoutCheck.TimeUnit.SECONDS) // default threshold
+  @GetMapping("/fast")
   public ResponseEntity<String> fastMethod() throws InterruptedException {
     Thread.sleep(1000);
     return ResponseEntity.ok("success");
